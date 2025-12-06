@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IAMET | Rack 3D Interactivo - Innovación en Infraestructura Tecnológica</title>
+    <meta name="description" content="Explora nuestro rack 3D interactivo con componentes Panduit, Cisco, Dell y APC. Tecnología de vanguardia para centros de datos.">
+    <meta property="og:title" content="IAMET - Rack 3D Interactivo">
+    <meta property="og:description" content="Tecnología de vanguardia para centros de datos">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+    <style>
+        body { 
+            margin: 0; 
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            display: flex;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .rack-container {
+            width: 70%;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        
+        .info-panel {
+            width: 25%;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-left: 20px;
+            padding: 30px;
+            box-sizing: border-box;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+        
+        .info-panel h2 {
+            color: #1e293b;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .component-info {
+            display: none;
+        }
+        
+        .component-info.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .component-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+        
+        .component-desc {
+            color: #64748b;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .specs {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .specs h4 {
+            margin: 0 0 15px 0;
+            color: #1e293b;
+        }
+        
+        .spec-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .spec-dot {
+            width: 6px;
+            height: 6px;
+            background: #3b82f6;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .quote-btn {
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quote-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .instructions {
+            text-align: center;
+            color: #64748b;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="rack-container" id="rack-container"></div>
+        
+        <div class="info-panel">
+            <h2>Información del Componente</h2>
+            
+            <div class="instructions" id="instructions">
+                <p>🖱️ Haz clic en cualquier componente del rack para ver sus detalles</p>
+            </div>
+            
+            <!-- Información del Switch -->
+            <div class="component-info" id="info-switch">
+                <div class="component-title">Switch Cisco Catalyst 9300</div>
+                <div class="component-desc">Switch empresarial de alto rendimiento con tecnología StackWise-480. Ideal para redes de campus y centros de datos.</div>
+                <div class="specs">
+                    <h4>Especificaciones</h4>
+                    <div class="spec-item"><div class="spec-dot"></div>48x 1Gbps + 4x 10Gbps SFP+</div>
+                    <div class="spec-item"><div class="spec-dot"></div>PoE+ 740W</div>
+                    <div class="spec-item"><div class="spec-dot"></div>Stacking hasta 480Gbps</div>
+                    <div class="spec-item"><div class="spec-dot"></div>Layer 3 Routing</div>
+                </div>
+                <button class="quote-btn" onclick="requestQuote('Switch Cisco Catalyst 9300')">Cotizar este producto</button>
+            </div>
+            
+            <!-- Información del Panel Panduit -->
+            <div class="component-info" id="info-patch">
+                <div class="component-title">Panduit NetKey Patch Panel</div>
+                <div class="component-desc">Panel de parcheo modular NetKey de 48 puertos Cat6A. Diseño de alta densidad con gestión de cables integrada.</div>
+                <div class="specs">
+                    <h4>Especificaciones</h4>
+                    <div class="spec-item"><div class="spec-dot"></div>Modelo: NK6PPG48Y</div>
+                    <div class="spec-item"><div class="spec-dot"></div>48 puertos Cat6A</div>
+                    <div class="spec-item"><div class="spec-dot"></div>Módulos Mini-Com TX6A</div>
+                    <div class="spec-item"><div class="spec-dot"></div>Certificado TIA-568-C.2</div>
+                </div>
+                <button class="quote-btn" onclick="requestQuote('Panduit NetKey Patch Panel')">Cotizar este producto</button>
+            </div>
+            
+            <!-- Información del Servidor -->
+            <div class="component-info" id="info-server">
+                <div class="component-title">Servidor Dell PowerEdge R750</div>
+                <div class="component-desc">Servidor de rack 2U con procesadores Intel Xeon Scalable de 3ra generación. Optimizado para virtualización.</div>
+                <div class="specs">
+                    <h4>Especificaciones</h4>
+                    <div class="spec-item"><div class="spec-dot"></div>Dual Intel Xeon Gold 6338</div>
+                    <div class="spec-item"><div class="spec-dot"></div>128GB DDR4 ECC 3200MHz</div>
+                    <div class="spec-item"><div class="spec-dot"></div>8x 1.92TB NVMe SSD RAID 10</div>
+                    <div class="spec-item"><div class="spec-dot"></div>Dual PSU 1400W redundante</div>
+                </div>
+                <button class="quote-btn" onclick="requestQuote('Servidor Dell PowerEdge R750')">Cotizar este producto</button>
+            </div>
+            
+            <!-- Información del UPS -->
+            <div class="component-info" id="info-ups">
+                <div class="component-title">APC Smart-UPS 3000VA</div>
+                <div class="component-desc">Sistema UPS online de doble conversión con gestión avanzada. Protección total contra anomalías eléctricas.</div>
+                <div class="specs">
+                    <h4>Especificaciones</h4>
+                    <div class="spec-item"><div class="spec-dot"></div>Modelo: SMT3000RMI2U</div>
+                    <div class="spec-item"><div class="spec-dot"></div>3000VA / 2700W</div>
+                    <div class="spec-item"><div class="spec-dot"></div>Autonomía: 15min a carga completa</div>
+                    <div class="spec-item"><div class="spec-dot"></div>SNMP management</div>
+                </div>
+                <button class="quote-btn" onclick="requestQuote('APC Smart-UPS 3000VA')">Cotizar este producto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // Variables globales
+        let scene, camera, renderer, controls, raycaster, mouse;
+        let interactables = [];
+        let currentInfo = null;
+        let clock = new THREE.Clock();
+        let animatedObjects = [];
+
+        // Función para mostrar información
+        function showComponentInfo(componentId) {
+            // Ocultar instrucciones
+            document.getElementById('instructions').style.display = 'none';
+            
+            // Ocultar info actual
+            if (currentInfo) {
+                currentInfo.classList.remove('active');
+            }
+            
+            // Mostrar nueva info
+            const newInfo = document.getElementById('info-' + componentId);
+            if (newInfo) {
+                newInfo.classList.add('active');
+                currentInfo = newInfo;
+            }
+        }
+        
+        // Función para cotizar
+        function requestQuote(productName) {
+            alert('¡Solicitud de cotización para: ' + productName + '!\n\nEn una implementación real, esto abriría un formulario de contacto.');
+        }
+
+        function init() {
+            console.log('Inicializando IAMET Rack 3D...');
+            
+            const container = document.getElementById('rack-container');
+            
+            // Escena
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x2a2a2a);
+            scene.fog = new THREE.Fog(0x2a2a2a, 20, 50);
+            
+            // Cámara
+            const aspect = container.offsetWidth / container.offsetHeight;
+            camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000);
+            camera.position.set(0, 8, 25);
+            
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+            
+            // Controles
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2.2;
+            controls.minPolarAngle = Math.PI / 6;
+            controls.enableZoom = true;
+            controls.enablePan = false;
+            controls.target.set(0, 8, 0);
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 1.0;
+            
+            // Raycaster
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+            
+            // Iluminación
+            setupLights();
+            
+            // Crear rack
+            createRack();
+            
+            // Eventos
+            renderer.domElement.addEventListener('click', onMouseClick);
+            renderer.domElement.addEventListener('mousedown', () => controls.autoRotate = false);
+            window.addEventListener('resize', onWindowResize);
+            
+            // Reanudar auto-rotación después de inactividad
+            let autoRotateTimer;
+            const resumeAutoRotate = () => {
+                clearTimeout(autoRotateTimer);
+                autoRotateTimer = setTimeout(() => {
+                    controls.autoRotate = true;
+                }, 3000);
+            };
+            
+            renderer.domElement.addEventListener('mouseup', resumeAutoRotate);
+            renderer.domElement.addEventListener('wheel', resumeAutoRotate);
+            
+            console.log('Rack inicializado con', interactables.length, 'objetos interactuables');
+            console.log('Objetos animados:', animatedObjects.length);
+            
+            animate();
+        }
+        
+        function setupLights() {
+            // Luz ambiental
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            scene.add(ambientLight);
+            
+            // Luz principal
+            const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+            mainLight.position.set(10, 20, 10);
+            mainLight.castShadow = true;
+            mainLight.shadow.mapSize.width = 2048;
+            mainLight.shadow.mapSize.height = 2048;
+            scene.add(mainLight);
+            
+            // Luz de acento
+            const accentLight = new THREE.PointLight(0x4a90e2, 0.8, 30);
+            accentLight.position.set(-8, 15, 8);
+            scene.add(accentLight);
+        }
+        
+        function createRack() {
+            // Estructura del rack
+            const rackGroup = new THREE.Group();
+            
+            // Posts del rack
+            const postGeometry = new THREE.BoxGeometry(0.3, 20, 0.3);
+            const rackMaterial = new THREE.MeshLambertMaterial({ color: 0x1a1a1a });
+            
+            const positions = [
+                [-4, 10, -3], [4, 10, -3], [-4, 10, 3], [4, 10, 3]
+            ];
+            
+            positions.forEach(pos => {
+                const post = new THREE.Mesh(postGeometry, rackMaterial);
+                post.position.set(...pos);
+                post.castShadow = true;
+                rackGroup.add(post);
+            });
+            
+            scene.add(rackGroup);
+            
+            // Componentes
+            let yPos = 18;
+            
+            // Switch 1
+            const switch1 = createSwitch();
+            switch1.position.set(0, yPos, 0);
+            switch1.userData = { id: 'switch', name: 'Switch Cisco' };
+            scene.add(switch1);
+            interactables.push(switch1);
+            yPos -= 3;
+            
+            // Patch Panel
+            const patch1 = createPatchPanel();
+            patch1.position.set(0, yPos, 0);
+            patch1.userData = { id: 'patch', name: 'Panel Panduit' };
+            scene.add(patch1);
+            interactables.push(patch1);
+            yPos -= 2;
+            
+            // Servidor
+            const server = createServer();
+            server.position.set(0, yPos, 0);
+            server.userData = { id: 'server', name: 'Servidor Dell' };
+            scene.add(server);
+            interactables.push(server);
+            yPos -= 4;
+            
+            // Switch 2
+            const switch2 = createSwitch();
+            switch2.position.set(0, yPos, 0);
+            switch2.userData = { id: 'switch', name: 'Switch Cisco 2' };
+            scene.add(switch2);
+            interactables.push(switch2);
+            yPos -= 5;
+            
+            // UPS
+            const ups = createUPS();
+            ups.position.set(0, yPos, 0);
+            ups.userData = { id: 'ups', name: 'UPS APC' };
+            scene.add(ups);
+            interactables.push(ups);
+        }
+        
+        function createSwitch() {
+            const group = new THREE.Group();
+            
+            // Chassis
+            const chassis = new THREE.Mesh(
+                new THREE.BoxGeometry(8, 1.5, 6),
+                new THREE.MeshLambertMaterial({ color: 0x2a2a2a })
+            );
+            chassis.castShadow = true;
+            group.add(chassis);
+            
+            // Panel frontal
+            const frontPanel = new THREE.Mesh(
+                new THREE.BoxGeometry(7.8, 1.3, 0.1),
+                new THREE.MeshLambertMaterial({ color: 0x1a1a1a })
+            );
+            frontPanel.position.z = 3.05;
+            group.add(frontPanel);
+            
+            // LEDs con animación
+            for (let i = 0; i < 24; i++) {
+                const isActive = Math.random() > 0.3;
+                const led = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.05),
+                    new THREE.MeshLambertMaterial({ 
+                        color: isActive ? (Math.random() > 0.5 ? 0x00ff00 : 0xff6600) : 0x333333,
+                        emissive: isActive ? (Math.random() > 0.5 ? 0x002200 : 0x331100) : 0x000000,
+                        emissiveIntensity: isActive ? 0.5 : 0
+                    })
+                );
+                led.position.set(-3.5 + (i * 0.3), 0.3, 3.1);
+                
+                // Datos para animación
+                if (isActive) {
+                    led.userData = { 
+                        isLED: true,
+                        blinkSpeed: 1000 + Math.random() * 2000,
+                        blinkPhase: Math.random() * Math.PI * 2,
+                        originalEmissive: led.material.emissive.clone(),
+                        maxIntensity: 0.8
+                    };
+                    animatedObjects.push(led);
+                }
+                
+                group.add(led);
+            }
+            
+            return group;
+        }
+        
+        function createPatchPanel() {
+            const group = new THREE.Group();
+            
+            // Panel base
+            const panel = new THREE.Mesh(
+                new THREE.BoxGeometry(8, 1, 4),
+                new THREE.MeshLambertMaterial({ color: 0x1a1a1a })
+            );
+            panel.castShadow = true;
+            group.add(panel);
+            
+            // Franja azul Panduit
+            const stripe = new THREE.Mesh(
+                new THREE.BoxGeometry(7.8, 0.1, 0.05),
+                new THREE.MeshLambertMaterial({ color: 0x0066cc })
+            );
+            stripe.position.set(0, 0.45, 2.05);
+            group.add(stripe);
+            
+            // Puertos
+            for (let row = 0; row < 2; row++) {
+                for (let i = 0; i < 24; i++) {
+                    const port = new THREE.Mesh(
+                        new THREE.BoxGeometry(0.2, 0.15, 0.2),
+                        new THREE.MeshLambertMaterial({ 
+                            color: row === 0 ? 0x0066cc : 0x333333 
+                        })
+                    );
+                    port.position.set(
+                        -3.5 + (i * 0.3), 
+                        row === 0 ? 0.15 : -0.15, 
+                        2.1
+                    );
+                    group.add(port);
+                }
+            }
+            
+            return group;
+        }
+        
+        function createServer() {
+            const group = new THREE.Group();
+            
+            // Chassis 2U
+            const chassis = new THREE.Mesh(
+                new THREE.BoxGeometry(8, 3, 6),
+                new THREE.MeshLambertMaterial({ color: 0x2a2a2a })
+            );
+            chassis.castShadow = true;
+            group.add(chassis);
+            
+            // Panel frontal
+            const frontPanel = new THREE.Mesh(
+                new THREE.BoxGeometry(7.8, 2.8, 0.1),
+                new THREE.MeshLambertMaterial({ color: 0x1a1a1a })
+            );
+            frontPanel.position.z = 3.05;
+            group.add(frontPanel);
+            
+            // Bahías de disco con animación
+            for (let i = 0; i < 8; i++) {
+                const isActive = i < 4;
+                const bay = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.8, 0.5, 0.2),
+                    new THREE.MeshLambertMaterial({ 
+                        color: isActive ? 0x0066aa : 0x333333,
+                        emissive: isActive ? 0x001133 : 0x000000,
+                        emissiveIntensity: isActive ? 0.2 : 0
+                    })
+                );
+                bay.position.set(-3 + (i * 0.8), 0.8, 3.15);
+                
+                // Animación de actividad en disco
+                if (isActive) {
+                    bay.userData = {
+                        isDiskBay: true,
+                        pulseSpeed: 500 + Math.random() * 1000,
+                        pulsePhase: Math.random() * Math.PI * 2,
+                        baseIntensity: 0.2,
+                        maxIntensity: 0.6
+                    };
+                    animatedObjects.push(bay);
+                }
+                
+                group.add(bay);
+            }
+            
+            // LEDs de estado con animación
+            const powerLed = new THREE.Mesh(
+                new THREE.SphereGeometry(0.08),
+                new THREE.MeshLambertMaterial({ 
+                    color: 0x00ff00, 
+                    emissive: 0x002200,
+                    emissiveIntensity: 0.5
+                })
+            );
+            powerLed.position.set(-3.5, -1, 3.15);
+            powerLed.userData = {
+                isLED: true,
+                blinkSpeed: 2000,
+                blinkPhase: 0,
+                originalEmissive: powerLed.material.emissive.clone(),
+                maxIntensity: 0.8
+            };
+            animatedObjects.push(powerLed);
+            group.add(powerLed);
+            
+            return group;
+        }
+        
+        function createUPS() {
+            const group = new THREE.Group();
+            
+            // Chassis
+            const chassis = new THREE.Mesh(
+                new THREE.BoxGeometry(8, 4, 7),
+                new THREE.MeshLambertMaterial({ color: 0x2a2a2a })
+            );
+            chassis.castShadow = true;
+            group.add(chassis);
+            
+            // Pantalla LCD
+            const screen = new THREE.Mesh(
+                new THREE.BoxGeometry(3, 1.5, 0.1),
+                new THREE.MeshLambertMaterial({ 
+                    color: 0x003322,
+                    emissive: 0x001111,
+                    emissiveIntensity: 0.3
+                })
+            );
+            screen.position.set(0, 0.5, 3.55);
+            group.add(screen);
+            
+            // LED de estado con animación
+            const statusLed = new THREE.Mesh(
+                new THREE.SphereGeometry(0.1),
+                new THREE.MeshLambertMaterial({ 
+                    color: 0x00ff00,
+                    emissive: 0x002200,
+                    emissiveIntensity: 0.8
+                })
+            );
+            statusLed.position.set(-3.5, 0.5, 3.55);
+            statusLed.userData = {
+                isLED: true,
+                blinkSpeed: 1500,
+                blinkPhase: Math.PI,
+                originalEmissive: statusLed.material.emissive.clone(),
+                maxIntensity: 1.2
+            };
+            animatedObjects.push(statusLed);
+            group.add(statusLed);
+            
+            return group;
+        }
+        
+        function onMouseClick(event) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(interactables, true);
+            
+            if (intersects.length > 0) {
+                const clicked = intersects[0].object.parent;
+                if (clicked.userData && clicked.userData.id) {
+                    console.log('Componente clickeado:', clicked.userData.name);
+                    showComponentInfo(clicked.userData.id);
+                    
+                    // Efecto visual
+                    clicked.scale.set(1.05, 1.05, 1.05);
+                    setTimeout(() => {
+                        clicked.scale.set(1, 1, 1);
+                    }, 200);
+                }
+            }
+        }
+        
+        function onWindowResize() {
+            const container = document.getElementById('rack-container');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const delta = clock.getDelta();
+            const elapsed = clock.getElapsedTime();
+            
+            // Animar LEDs y componentes
+            animatedObjects.forEach(obj => {
+                if (obj.userData.isLED) {
+                    // Animación de parpadeo para LEDs
+                    const phase = obj.userData.blinkPhase;
+                    const speed = 1000 / obj.userData.blinkSpeed;
+                    const intensity = (Math.sin(elapsed * speed + phase) + 1) / 2;
+                    obj.material.emissiveIntensity = 0.2 + intensity * obj.userData.maxIntensity;
+                }
+                
+                if (obj.userData.isDiskBay) {
+                    // Animación de pulso para bahías de disco
+                    const phase = obj.userData.pulsePhase;
+                    const speed = 1000 / obj.userData.pulseSpeed;
+                    const intensity = (Math.sin(elapsed * speed + phase) + 1) / 2;
+                    obj.material.emissiveIntensity = obj.userData.baseIntensity + 
+                        intensity * (obj.userData.maxIntensity - obj.userData.baseIntensity);
+                }
+            });
+            
+            // Movimiento sutil del rack completo
+            scene.traverse((child) => {
+                if (child.userData && child.userData.id) {
+                    // Flotación muy sutil
+                    const originalY = child.position.y;
+                    child.position.y = originalY + Math.sin(elapsed * 0.5 + child.position.x * 0.1) * 0.02;
+                }
+            });
+            
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        // Inicializar cuando todo esté cargado
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

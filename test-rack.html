@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Rack 3D</title>
+    <style>
+        body { margin: 0; background: #f0f0f0; }
+        #container { width: 800px; height: 600px; margin: 20px auto; background: white; border: 1px solid #ccc; }
+        #info { margin: 20px; padding: 10px; background: #e0e0e0; }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h3>Test Rack 3D - Haz doble clic en cualquier componente</h3>
+        <div id="debug-info"></div>
+    </div>
+    
+    <div id="container"></div>
+
+    <!-- Three.js Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        console.log('Script cargándose...');
+        
+        // Variables globales
+        let scene, camera, renderer, controls, raycaster, mouse;
+        let interactables = [];
+        let debugDiv = document.getElementById('debug-info');
+        
+        function updateDebug(message) {
+            console.log(message);
+            debugDiv.innerHTML += message + '<br>';
+        }
+        
+        function init() {
+            updateDebug('Iniciando aplicación...');
+            
+            // Verificar Three.js
+            if (typeof THREE === 'undefined') {
+                updateDebug('ERROR: Three.js no disponible');
+                return;
+            }
+            updateDebug('Three.js disponible: ' + THREE.REVISION);
+            
+            // Verificar OrbitControls
+            if (typeof THREE.OrbitControls === 'undefined') {
+                updateDebug('ERROR: OrbitControls no disponible');
+                return;
+            }
+            updateDebug('OrbitControls disponible');
+            
+            const container = document.getElementById('container');
+            
+            // Escena
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0f0f0);
+            
+            // Cámara
+            camera = new THREE.PerspectiveCamera(75, 800/600, 0.1, 1000);
+            camera.position.set(0, 0, 5);
+            
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(800, 600);
+            container.appendChild(renderer.domElement);
+            
+            // Controles
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            
+            // Raycaster
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+            
+            // Luz
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(5, 5, 5);
+            scene.add(light);
+            
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+            scene.add(ambientLight);
+            
+            // Crear objetos de prueba
+            createTestObjects();
+            
+            // Eventos
+            renderer.domElement.addEventListener('dblclick', onDoubleClick);
+            
+            updateDebug('Configuración completada. Objetos interactuables: ' + interactables.length);
+            
+            animate();
+        }
+        
+        function createTestObjects() {
+            // Cubo 1
+            const geometry1 = new THREE.BoxGeometry();
+            const material1 = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+            const cube1 = new THREE.Mesh(geometry1, material1);
+            cube1.position.x = -2;
+            cube1.userData = { id: 'cube1', interactive: true };
+            scene.add(cube1);
+            interactables.push(cube1);
+            
+            // Cubo 2
+            const geometry2 = new THREE.BoxGeometry();
+            const material2 = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+            const cube2 = new THREE.Mesh(geometry2, material2);
+            cube2.position.x = 2;
+            cube2.userData = { id: 'cube2', interactive: true };
+            scene.add(cube2);
+            interactables.push(cube2);
+            
+            updateDebug('Objetos de prueba creados');
+        }
+        
+        function onDoubleClick(event) {
+            updateDebug('Doble clic detectado');
+            
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            
+            updateDebug('Mouse: ' + mouse.x.toFixed(2) + ', ' + mouse.y.toFixed(2));
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(interactables, true);
+            
+            updateDebug('Intersecciones encontradas: ' + intersects.length);
+            
+            if (intersects.length > 0) {
+                const object = intersects[0].object;
+                if (object.userData && object.userData.id) {
+                    updateDebug('¡Objeto clickeado: ' + object.userData.id + '!');
+                    object.material.color.setHex(0x0000ff); // Cambiar a azul
+                } else {
+                    updateDebug('Objeto sin ID encontrado');
+                }
+            } else {
+                updateDebug('No se encontraron intersecciones');
+            }
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        // Iniciar cuando la página esté cargada
+        window.addEventListener('load', () => {
+            updateDebug('Página cargada completamente');
+            init();
+        });
+        
+    </script>
+</body>
+</html>

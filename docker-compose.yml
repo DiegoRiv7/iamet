@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  iamet-rack:
+    build: .
+    container_name: iamet-rack-3d
+    ports:
+      - "80:80"
+      - "8080:80"  # Puerto alternativo
+    restart: unless-stopped
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+    volumes:
+      # Opcional: para desarrollo en tiempo real
+      # - ./:/usr/share/nginx/html:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.iamet.rule=Host(`localhost`)"
+      - "traefik.http.services.iamet.loadbalancer.server.port=80"
+    
+  # Opcional: Servicio de base de datos si planeas agregar backend
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: iamet-db
+  #   environment:
+  #     POSTGRES_DB: iamet
+  #     POSTGRES_USER: iamet_user
+  #     POSTGRES_PASSWORD: iamet_pass
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+# volumes:
+#   postgres_data:
