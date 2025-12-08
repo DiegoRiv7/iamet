@@ -1,25 +1,342 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAMET | Rack 3D Interactivo - Innovación en Infraestructura Tecnológica</title>
-    <meta name="description" content="Explora nuestro rack 3D interactivo con componentes Panduit, Cisco, Dell y APC. Tecnología de vanguardia para centros de datos.">
-    <meta property="og:title" content="IAMET - Rack 3D Interactivo">
-    <meta property="og:description" content="Tecnología de vanguardia para centros de datos">
-    <meta property="og:type" content="website">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
-    <script>
-        // Redirección inmediata al rack 3D
-        window.location.href = './rack-simple.html';
-    </script>
+    <title>IAMET | Innovación y Excelencia en Tecnología</title>
+    <meta name="description"
+        content="IAMET - Líder en soluciones tecnológicas innovadoras. Descubre nuestros servicios premium y experiencias que transforman el futuro.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Three.js Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Panduit Models -->
+    <script src="js/panduit-models.js"></script>
 </head>
+
 <body>
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif;">
-        <div style="text-align: center;">
-            <h2>Cargando IAMET Rack 3D...</h2>
-            <p>Si no eres redirigido automáticamente, <a href="rack-simple.html">haz clic aquí</a></p>
+
+    <!-- Navigation -->
+    <nav class="global-nav">
+        <div class="nav-content">
+            <a href="#" class="nav-logo">
+                <img src="https://www.iamet.mx/.cm4all/uproc.php/0/Fondos/.logo.png/picture-200?_=1904956a6f0"
+                    alt="IAMET Logo" class="logo-img">
+            </a>
+            <ul class="nav-list">
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#marcas">Socios</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <div class="nav-mobile-toggle">
+                <span></span>
+                <span></span>
+            </div>
         </div>
-    </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content fade-in">
+                <h1 class="hero-headline">Tecnología que transforma el futuro.</h1>
+                <p class="hero-subheadline">IAMET impulsa la innovación con soluciones tecnológicas de vanguardia que
+                    revolucionan industrias y conectan posibilidades.</p>
+                <div class="hero-cta">
+                    <a href="#servicios" class="btn btn-primary">Descubre IAMET</a>
+                    <a href="#contacto" class="btn btn-link">Hablemos <span class="arrow">›</span></a>
+                </div>
+            </div>
+            <div class="hero-image-container fade-in delay-1">
+                <!-- Pantalla de Carga -->
+                <div id="rack-loader"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 700px; background: rgba(255, 255, 255, 0.95); display: flex; justify-content: center; align-items: center; z-index: 100; flex-direction: column; transition: opacity 0.5s; backdrop-filter: blur(10px);">
+                    <div
+                        style="width: 40px; height: 40px; border: 4px solid #3b82f6; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;">
+                    </div>
+                    <div style="color: #3b82f6; font-weight: bold; font-size: 16px; letter-spacing: 2px;">CARGANDO RACK
+                        IAMET...</div>
+                </div>
+
+                <!-- Contenedor 3D del Rack -->
+                <div id="iamet-rack-container"
+                    style="width: 100%; max-width: 700px; height: 700px; position: relative;"></div>
+
+                <!-- Panel de información flotante -->
+                <div id="rack-info-panel"
+                    style="position: absolute; top: 20px; right: -320px; width: 300px; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 16px; padding: 24px; color: #1e293b; transition: right 0.3s ease; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12); z-index: 10; display: none;">
+                    <button id="close-rack-panel"
+                        style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: #64748b; cursor: pointer; font-size: 20px; padding: 4px; border-radius: 50%; transition: background 0.2s;"
+                        onmouseover="this.style.background='rgba(0,0,0,0.05)'"
+                        onmouseout="this.style.background='none'">×</button>
+                    <div id="rack-panel-content">
+                        <div style="text-align: center; color: #64748b; margin-top: 40px; font-size: 14px;">Haz clic en
+                            un componente para ver detalles</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="servicios" class="section services-section">
+            <div class="container">
+                <div class="section-header fade-on-scroll">
+                    <h2>Servicios</h2>
+                    <p>Soluciones tecnológicas impulsadas por Inteligencia Artificial.</p>
+                </div>
+                <div class="services-grid services-grid-large">
+                    <!-- Card 1: Infraestructura -->
+                    <div class="service-card-flip fade-on-scroll" onclick="this.classList.toggle('flipped')">
+                        <div class="service-card-inner">
+                            <!-- Front -->
+                            <div class="service-card-front">
+                                <div class="service-icon">🏗️</div>
+                                <h3>Infraestructura y Data Centers</h3>
+                                <p>Diseño, instalación y certificación de infraestructura tecnológica de clase mundial.
+                                    Cableado estructurado, fibra óptica y centros de datos bajo normas ANSI/TIA-942-B.
+                                </p>
+                                <div class="partner-badge">
+                                    <span>Panduit Authorized Partner</span>
+                                </div>
+                            </div>
+                            <!-- Back -->
+                            <div class="service-card-back">
+                                <h3>Infraestructura Inteligente</h3>
+                                <div class="service-details">
+                                    <h4>¿Por qué elegirnos?</h4>
+                                    <ul>
+                                        <li>✓ Certificados Panduit y fabricantes líderes</li>
+                                        <li>✓ Diseño predictivo para optimización</li>
+                                        <li>✓ Diseño y modificación de IDFs y MDFs</li>
+                                        <li>✓ Monitoreo inteligente de infraestructura</li>
+                                    </ul>
+                                    <h4>Aplicaciones</h4>
+                                    <p>Data centers empresariales, campus corporativos, hospitales, universidades y
+                                        edificios inteligentes.</p>
+                                </div>
+                                <a href="#contacto" class="btn-card-cta" onclick="setTimeout(() => { document.getElementById('service').value = 'infraestructura'; document.getElementById('message').value = 'Hola, estoy interesado en una consultoría gratuita para Infraestructura y Data Centers con equipos Panduit.'; }, 300);">Solicitar Consultoría Gratuita</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: CCTV -->
+                    <div class="service-card-flip fade-on-scroll" onclick="this.classList.toggle('flipped')">
+                        <div class="service-card-inner">
+                            <!-- Front -->
+                            <div class="service-card-front">
+                                <div class="service-icon">📹</div>
+                                <h3>CCTV y Seguridad Electrónica</h3>
+                                <p>Sistemas de videovigilancia con inteligencia artificial. Reconocimiento facial,
+                                    detección de eventos y análisis en tiempo real para máxima seguridad.</p>
+                                <div class="partner-badge">
+                                    <span>Hikvision & Avigilon Certified</span>
+                                </div>
+                            </div>
+                            <!-- Back -->
+                            <div class="service-card-back">
+                                <h3>Seguridad Inteligente</h3>
+                                <div class="service-details">
+                                    <h4>¿Por qué elegirnos?</h4>
+                                    <ul>
+                                        <li>✓ IA para detección automática de amenazas</li>
+                                        <li>✓ Reconocimiento facial y de placas vehiculares</li>
+                                        <li>✓ Análisis de comportamiento en tiempo real</li>
+                                        <li>✓ Integración con sistemas de control de acceso</li>
+                                    </ul>
+                                    <h4>Aplicaciones</h4>
+                                    <p>Instalaciones industriales, centros comerciales, perímetros fronterizos, ciudades
+                                        inteligentes y seguridad urbana.</p>
+                                </div>
+                                <a href="#contacto" class="btn-card-cta" onclick="setTimeout(() => { document.getElementById('service').value = 'cctv'; document.getElementById('message').value = 'Hola, me gustaría agendar una demo en vivo de sistemas CCTV con inteligencia artificial.'; }, 300);">Agendar Demo en Vivo</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Desarrollo de Software -->
+                    <div class="service-card-flip fade-on-scroll" onclick="this.classList.toggle('flipped')">
+                        <div class="service-card-inner">
+                            <!-- Front -->
+                            <div class="service-card-front">
+                                <div class="service-icon">💻</div>
+                                <h3>Desarrollo de Software</h3>
+                                <p>Soluciones de software personalizadas con inteligencia artificial integrada. 
+                                    Aplicaciones web, móviles y sistemas empresariales que automatizan procesos complejos.</p>
+                                <div class="partner-badge">
+                                    <span>Tecnología Vanguardista</span>
+                                </div>
+                            </div>
+                            <!-- Back -->
+                            <div class="service-card-back">
+                                <h3>Software Inteligente</h3>
+                                <div class="service-details">
+                                    <h4>¿Por qué elegirnos?</h4>
+                                    <ul>
+                                        <li>✓ Desarrollo ágil con metodologías modernas</li>
+                                        <li>✓ Integración nativa de inteligencia artificial</li>
+                                        <li>✓ Arquitectura escalable y segura</li>
+                                        <li>✓ Soporte técnico especializado continuo</li>
+                                    </ul>
+                                    <h4>Aplicaciones</h4>
+                                    <p>Sistemas CRM personalizados, aplicaciones móviles, plataformas web, 
+                                        automatización de procesos y análisis de datos.</p>
+                                </div>
+                                <a href="#contacto" class="btn-card-cta" onclick="setTimeout(() => { document.getElementById('service').value = 'software'; document.getElementById('message').value = 'Hola, estoy interesado en cotizar desarrollo de software personalizado con inteligencia artificial.'; }, 300);">Cotizar Desarrollo</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Logística -->
+                    <div class="service-card-flip fade-on-scroll" onclick="this.classList.toggle('flipped')">
+                        <div class="service-card-inner">
+                            <!-- Front -->
+                            <div class="service-card-front">
+                                <div class="service-icon">📦</div>
+                                <h3>Logística y Rastreo Inteligente</h3>
+                                <p>Tecnología Zebra para seguimiento de activos en tiempo real. Optimización de
+                                    almacenes y cadenas de suministro con inteligencia artificial predictiva.</p>
+                                <div class="partner-badge">
+                                    <span>Zebra Technologies Partner</span>
+                                </div>
+                            </div>
+                            <!-- Back -->
+                            <div class="service-card-back">
+                                <h3>Logística del Futuro</h3>
+                                <div class="service-details">
+                                    <h4>¿Por qué elegirnos?</h4>
+                                    <ul>
+                                        <li>✓ Visibilidad total de inventario en tiempo real</li>
+                                        <li>✓ IA para optimización de rutas y procesos</li>
+                                        <li>✓ Reducción de pérdidas hasta 95%</li>
+                                        <li>✓ Integración perfecta con ERP/WMS</li>
+                                    </ul>
+                                    <h4>Aplicaciones</h4>
+                                    <p>Almacenes automatizados, manufactura, retail, distribución logística y cadenas de
+                                        suministro complejas.</p>
+                                </div>
+                                <a href="#contacto" class="btn-card-cta" onclick="setTimeout(() => { document.getElementById('service').value = 'logistica'; document.getElementById('message').value = 'Hola, me interesa solicitar un análisis ROI para soluciones de Logística con tecnología Zebra.'; }, 300);">Solicitar Análisis ROI</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brands Section -->
+        <section id="marcas" class="section brands-section">
+            <div class="container">
+                <div class="section-header fade-on-scroll">
+                    <h2>Socios Tecnológicos</h2>
+                    <p>Distribuimos e implementamos las marcas líderes a nivel mundial.</p>
+                </div>
+                <div class="brands-grid">
+                    <div class="brand-logo fade-on-scroll" onclick="window.open('https://zebra.iamet.mx', '_blank')" style="cursor: pointer;">
+                        <div class="brand-placeholder">ZEBRA</div>
+                    </div>
+                    <div class="brand-logo fade-on-scroll">
+                        <div class="brand-placeholder">CISCO</div>
+                    </div>
+                    <div class="brand-logo fade-on-scroll">
+                        <div class="brand-placeholder">PANDUIT</div>
+                    </div>
+                    <div class="brand-logo fade-on-scroll" onclick="window.open('https://hikvision.iamet.mx', '_blank')" style="cursor: pointer;">
+                        <div class="brand-placeholder">HIKVISION</div>
+                    </div>
+                    <div class="brand-logo fade-on-scroll" onclick="window.open('https://avigilon.iamet.mx', '_blank')" style="cursor: pointer;">
+                        <div class="brand-placeholder">AVIGILON</div>
+                    </div>
+                    <div class="brand-logo fade-on-scroll">
+                        <div class="brand-placeholder">AXIS</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="section cta-section">
+            <div class="container">
+                <div class="cta-content fade-on-scroll">
+                    <h2>¿Listo para liderar el futuro?</h2>
+                    <p>Únete a IAMET y transforma tu industria con tecnología de vanguardia.</p>
+                    <div class="cta-buttons">
+                        <a href="#contacto" class="btn btn-primary btn-large">Iniciar transformación</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contacto" class="section contact-section">
+            <div class="container">
+                <div class="section-header fade-on-scroll">
+                    <h2>Conecta con IAMET</h2>
+                    <p>Transformemos el futuro juntos. Tu próxima innovación comienza aquí.</p>
+                </div>
+                <div class="contact-content">
+                    <div class="contact-form-container fade-on-scroll">
+                        <form class="contact-form">
+                            <div class="form-group">
+                                <input type="text" id="name" name="name" placeholder="Nombre completo" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="company" name="company" placeholder="Empresa/Organización">
+                            </div>
+                            <div class="form-group">
+                                <select id="service" name="service" required>
+                                    <option value="">Área de interés</option>
+                                    <option value="infraestructura">Infraestructura y Data Centers</option>
+                                    <option value="cctv">CCTV y Seguridad Electrónica</option>
+                                    <option value="software">Desarrollo de Software</option>
+                                    <option value="logistica">Logística y Rastreo Inteligente</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="message" name="message"
+                                    placeholder="Describe tu visión y cómo IAMET puede ayudarte a hacerla realidad"
+                                    rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-large btn-full">Iniciar
+                                conversación</button>
+                        </form>
+                    </div>
+                    <div class="contact-info fade-on-scroll">
+                        <div class="contact-item">
+                            <h4>Contacto Directo</h4>
+                            <p>Tel: 664 380 8965<br>WhatsApp: 664 331 4515</p>
+                        </div>
+                        <div class="contact-item">
+                            <h4>Correo Electrónico</h4>
+                            <p>info@iamet.mx</p>
+                        </div>
+                        <div class="contact-item">
+                            <h4>Ubicación</h4>
+                            <p>Plaza Paseo del Río # 16220 Local 1C<br>Tijuana, Baja California, CP 22226</p>
+                        </div>
+                        <div class="contact-item">
+                            <h4>Horario</h4>
+                            <p>Lunes a Viernes<br>9:00 AM - 6:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/main.js"></script>
 </body>
+
 </html>
