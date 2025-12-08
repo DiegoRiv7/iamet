@@ -1,14 +1,14 @@
-# Usar nginx como servidor web ligero
 FROM nginx:alpine
 
-# Copiar archivos de la aplicación al directorio de nginx
+# Copiar archivos
 COPY . /usr/share/nginx/html/
 
-# Crear configuración personalizada de nginx
+# Corregir permisos para evitar errores 403
+RUN chmod -R 644 /usr/share/nginx/html/*
+RUN chmod 755 /usr/share/nginx/html
+
+# Copiar configuración nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Exponer puerto 80
 EXPOSE 80
-
-# Comando por defecto
 CMD ["nginx", "-g", "daemon off;"]
