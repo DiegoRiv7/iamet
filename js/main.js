@@ -90,22 +90,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Navbar scroll effect
+    // Forzar navbar negro desde el inicio
     const nav = document.querySelector('.global-nav');
-    let lastScrollY = window.scrollY;
+    if (nav) {
+        nav.style.background = 'rgba(0, 0, 0, 0.95)';
+        nav.style.borderBottom = '1px solid rgba(255, 255, 255, 0.1)';
+    }
+    
+    // Forzar texto blanco en navegación
+    const navLinks = document.querySelectorAll('.nav-list a');
+    navLinks.forEach(link => {
+        link.style.color = 'white';
+    });
 
+    // Logo y menu ocultos inicialmente, aparecen al hacer scroll
+    const logo = document.querySelector('.nav-logo');
+    const navList = document.querySelector('.nav-list');
+    
+    if (logo) {
+        logo.style.opacity = '0';
+        logo.style.transition = 'opacity 0.8s ease';
+    }
+    
+    if (navList) {
+        navList.style.opacity = '0';
+        navList.style.transition = 'opacity 0.8s ease';
+    }
+
+    // Efecto de scroll para mostrar/ocultar logo y menu
     window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
-
-        if (currentScrollY > 100) {
-            nav.style.background = 'rgba(255, 255, 255, 0.95)';
-            nav.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+        const scrollY = window.scrollY;
+        
+        if (scrollY > 100) {
+            if (logo) logo.style.opacity = '1';
+            if (navList) navList.style.opacity = '1';
         } else {
-            nav.style.background = 'rgba(255, 255, 255, 0.8)';
-            nav.style.boxShadow = '';
+            if (logo) logo.style.opacity = '0';
+            if (navList) navList.style.opacity = '0';
         }
-
-        lastScrollY = currentScrollY;
     });
 
     // Parallax effect for hero - DISABLED
@@ -161,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicializar Rack 3D con Three.js después de que las librerías se carguen
     setTimeout(() => {
+        console.log('Intentando inicializar rack...');
         initIAMETRack3D();
     }, 100);
 
@@ -206,23 +229,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // === RACK 3D IAMET CON THREE.JS - VERSIÓN MEJORADA ===
 function initIAMETRack3D() {
-    console.log('Iniciando IAMET Rack 3D...');
+    console.log('Función initIAMETRack3D llamada');
     
     // Verificar si Three.js está disponible
     if (typeof THREE === 'undefined') {
-        console.error('Three.js no está disponible');
+        console.error('Three.js no disponible');
         return;
     }
-    console.log('Three.js disponible:', THREE.REVISION);
+    console.log('Three.js disponible');
     
-    // Verificar OrbitControls
-    if (typeof THREE.OrbitControls === 'undefined') {
-        console.error('OrbitControls no está disponible');
-        return;
-    }
-    console.log('OrbitControls disponible');
-
-    // Configuración
     const container = document.getElementById('iamet-rack-container');
     const loader = document.getElementById('rack-loader');
 
@@ -230,19 +245,23 @@ function initIAMETRack3D() {
         console.error('Container no encontrado');
         return;
     }
-    console.log('Container encontrado:', container);
+    console.log('Container encontrado');
 
+    console.log('Creando sceneConfig...');
     const sceneConfig = {
         width: container.offsetWidth,
         height: container.offsetHeight,
     };
+    console.log('SceneConfig:', sceneConfig);
 
-    let scene, camera, renderer, controls, raycaster, mouse;
+    let scene, camera, renderer, controls;
     let interactables = [];
     let hoveredObject = null;
     let clock = new THREE.Clock();
     let mouseDownPosition = new THREE.Vector2();
     let isDragging = false;
+    
+    console.log('Variables inicializadas, llamando init()...');
 
     // Datos de componentes IAMET con equipos Panduit reales
     const componentData = {
@@ -285,73 +304,81 @@ function initIAMETRack3D() {
     };
 
     function init() {
-        // Escena con fondo gradiente sutil
+        console.log('Función init() ejecutándose...');
+        // Escena completamente transparente - Sin fondo
         scene = new THREE.Scene();
-        scene.fog = new THREE.Fog(0xf5f5f7, 40, 80);
+        console.log('Scene creada');
 
-        // Cámara con mejor FOV - Posición frontal para vista de frente
-        camera = new THREE.PerspectiveCamera(45, sceneConfig.width / sceneConfig.height, 0.1, 1000);
-        camera.position.set(0, 10, 35); // Vista frontal centrada
+        // Cámara con vista inclinada inicial alineada al texto
+        console.log('Creando cámara...');
+        camera = new THREE.PerspectiveCamera(42, sceneConfig.width / sceneConfig.height, 0.1, 1000);
+        camera.position.set(20, 12, 32); // Vista más grande y girada a la derecha
+        camera.lookAt(0, 10, 0); // Mirar al centro del rack
+        console.log('Cámara creada y apuntando al rack');
 
-        // Renderer con configuración mejorada - SIN SOMBRAS
+        // Renderer con configuración premium - CON SOMBRAS
+        console.log('Creando renderer...');
         renderer = new THREE.WebGLRenderer({
             antialias: true,
             alpha: true,
             powerPreference: "high-performance"
         });
+        console.log('Renderer creado, configurando...');
         renderer.setSize(sceneConfig.width, sceneConfig.height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.2;
-        renderer.setClearColor(0x000000, 0);
+        renderer.toneMappingExposure = 1.3;
+        renderer.setClearColor(0x000000, 0); // Fondo completamente transparente
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        console.log('Añadiendo canvas al container...');
         container.appendChild(renderer.domElement);
+        console.log('Canvas añadido');
 
         // Luces mejoradas sin sombras
+        console.log('Configurando luces...');
         setupEnhancedLights();
+        console.log('Luces configuradas');
 
-        // Controles suavizados - SOLO ROTACIÓN
+        // Controles interactivos restaurados
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.08;
-        controls.maxPolarAngle = Math.PI / 2.1;
-        controls.minPolarAngle = Math.PI / 6;
-        controls.enableZoom = false; // Desactivar zoom
-        controls.enablePan = false;  // Desactivar paneo
-        controls.target.set(0, 8, 0);
-        controls.autoRotate = false; // Desactivar rotación automática
-        controls.autoRotateSpeed = 0.5;
+        controls.dampingFactor = 0.05;
+        controls.maxPolarAngle = Math.PI / 1.8;
+        controls.minPolarAngle = Math.PI / 8;
+        controls.enableZoom = false; // Zoom deshabilitado
+        controls.enablePan = false;  // Sin paneo
+        controls.target.set(0, 8, 0); // Centrar en el rack
+        controls.autoRotate = false; // Sin rotación automática
 
-        // Raycaster
-        raycaster = new THREE.Raycaster();
-        mouse = new THREE.Vector2();
+        // Sin raycaster - Solo visual
 
+        // Sin suelo - Rack flotante
+
+        // Cubo de prueba removido - rack funcionando correctamente
+        
         // Construir rack mejorado con equipos Panduit
+        console.log('Construyendo rack...');
         buildEnhancedRack();
-        console.log('Rack construido. Objetos interactuables:', interactables.length);
-
-        // Eventos
+        console.log('Rack construido');
+        
+        // Solo evento de resize
+        console.log('Añadiendo event listeners...');
         window.addEventListener('resize', onWindowResize);
-        renderer.domElement.addEventListener('mousemove', onMouseMove);
-        renderer.domElement.addEventListener('dblclick', onDoubleClick);
-        console.log('Event listeners agregados al canvas');
-
-        // Pausar auto-rotación al interactuar
-        controls.addEventListener('start', () => {
-            controls.autoRotate = false;
-        });
-
-        // Panel UI
-        document.getElementById('close-rack-panel').addEventListener('click', () => {
-            const panel = document.getElementById('rack-info-panel');
-            panel.style.right = '-320px';
-            setTimeout(() => panel.style.display = 'none', 300);
-        });
+        console.log('Event listeners añadidos');
 
         // Remover loader inmediatamente
-        loader.style.opacity = '0';
-        setTimeout(() => loader.remove(), 300);
+        console.log('Removiendo loader...');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.remove(), 300);
+        }
+        console.log('Loader removido');
 
+        console.log('Iniciando animación...');
         animate();
+        console.log('Animación iniciada');
     }
 
     function setupEnhancedLights() {
@@ -523,7 +550,7 @@ function initIAMETRack3D() {
         const postHeight = 20;
         const postWidth = 0.6;
 
-        // Postes con bisel
+        // Solo postes - sin travesaños para evitar z-fighting completamente
         const positions = [
             [-5.5, postHeight / 2, -3.5], [5.5, postHeight / 2, -3.5],
             [-5.5, postHeight / 2, 3.5], [5.5, postHeight / 2, 3.5]
@@ -531,7 +558,7 @@ function initIAMETRack3D() {
 
         positions.forEach(pos => {
             const post = new THREE.Mesh(
-                new THREE.BoxGeometry(postWidth, postHeight, postWidth, 2, 10, 2),
+                new THREE.BoxGeometry(postWidth, postHeight, postWidth),
                 materials.rackMetal
             );
             post.position.set(...pos);
@@ -540,22 +567,6 @@ function initIAMETRack3D() {
             rackGroup.add(post);
         });
 
-        // Travesaños horizontales
-        const crossbarMaterial = new THREE.MeshStandardMaterial({
-            color: 0x1a1a1a,
-            roughness: 0.4,
-            metalness: 0.8
-        });
-
-        // Superior
-        const topBar = new THREE.Mesh(
-            new THREE.BoxGeometry(11.5, 0.3, 0.3),
-            crossbarMaterial
-        );
-        topBar.position.set(0, postHeight, -3.5);
-        topBar.castShadow = true;
-        rackGroup.add(topBar);
-
         return rackGroup;
     }
 
@@ -563,9 +574,9 @@ function initIAMETRack3D() {
         const group = new THREE.Group();
         group.userData = { id: 'core_switch', interactive: true };
 
-        // Chasis con bordes redondeados
+        // Chasis con bordes redondeados - reducido para evitar postes
         const chassis = new THREE.Mesh(
-            new THREE.BoxGeometry(10.5, 1.75, 7.5, 4, 4, 4),
+            new THREE.BoxGeometry(10, 1.75, 7.5, 4, 4, 4),
             materials.deviceChassis
         );
         chassis.castShadow = true;
@@ -574,7 +585,7 @@ function initIAMETRack3D() {
 
         // Panel frontal
         const frontPanel = new THREE.Mesh(
-            new THREE.BoxGeometry(10.2, 1.5, 0.15),
+            new THREE.BoxGeometry(9.8, 1.5, 0.15),
             materials.devicePanel
         );
         frontPanel.position.set(0, 0, 3.83);
@@ -631,7 +642,7 @@ function initIAMETRack3D() {
 
         // Panel base
         const panel = new THREE.Mesh(
-            new THREE.BoxGeometry(10.5, 1.5, 1.8),
+            new THREE.BoxGeometry(10, 1.5, 1.8),
             materials.deviceChassis
         );
         panel.castShadow = true;
@@ -668,7 +679,7 @@ function initIAMETRack3D() {
 
         // Chasis 2U
         const chassis = new THREE.Mesh(
-            new THREE.BoxGeometry(10.5, 3.5, 8.5),
+            new THREE.BoxGeometry(10, 3.5, 8.5),
             materials.deviceChassis
         );
         chassis.castShadow = true;
@@ -677,7 +688,7 @@ function initIAMETRack3D() {
 
         // Panel frontal
         const frontPanel = new THREE.Mesh(
-            new THREE.BoxGeometry(10.2, 3.2, 0.2),
+            new THREE.BoxGeometry(9.8, 3.2, 0.2),
             materials.devicePanel
         );
         frontPanel.position.set(0, 0, 4.35);
@@ -749,7 +760,7 @@ function initIAMETRack3D() {
 
         // Chasis UPS
         const chassis = new THREE.Mesh(
-            new THREE.BoxGeometry(10.5, 5.5, 9.5),
+            new THREE.BoxGeometry(10, 5.5, 9.5),
             materials.deviceChassis
         );
         chassis.castShadow = true;

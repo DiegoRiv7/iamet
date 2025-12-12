@@ -4,9 +4,13 @@ services:
   iamet-rack:
     build: .
     container_name: iamet-rack
-    ports:
-      - "8080:80"
     restart: unless-stopped
     environment:
       - NGINX_HOST=0.0.0.0
       - NGINX_PORT=80
+    networks:
+      - nginx_default
+
+networks:
+  nginx_default:
+    external: true
