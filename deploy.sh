@@ -55,16 +55,39 @@ fi
 
 # Probar configuración de nginx
 echo "🔍 Probando configuración nginx..."
-if nginx -t; then
-    echo "✅ Configuración nginx válida"
+
+# Verificar si nginx está disponible
+if command -v nginx > /dev/null 2>&1; then
+    if nginx -t; then
+        echo "✅ Configuración nginx válida"
+        
+        # Recargar nginx
+        echo "🔄 Recargando nginx..."
+        systemctl reload nginx
+        echo "✅ Nginx recargado"
+    else
+        echo "❌ Error en configuración nginx"
+        exit 1
+    fi
+elif docker ps | grep -q nginx; then
+    # Nginx está en contenedor Docker
+    NGINX_CONTAINER=$(docker ps --format "table {{.Names}}" | grep nginx | head -1)
+    echo "🔍 Nginx detectado en contenedor: $NGINX_CONTAINER"
     
-    # Recargar nginx
-    echo "🔄 Recargando nginx..."
-    systemctl reload nginx
-    echo "✅ Nginx recargado"
+    if docker exec $NGINX_CONTAINER nginx -t; then
+        echo "✅ Configuración nginx válida"
+        
+        # Recargar nginx en contenedor
+        echo "🔄 Recargando nginx en contenedor..."
+        docker exec $NGINX_CONTAINER nginx -s reload
+        echo "✅ Nginx recargado"
+    else
+        echo "❌ Error en configuración nginx"
+        exit 1
+    fi
 else
-    echo "❌ Error en configuración nginx"
-    exit 1
+    echo "⚠️  No se encontró nginx instalado o en contenedor"
+    echo "ℹ️  Continuando sin validar nginx..."
 fi
 
 # Detener contenedor existente si existe
