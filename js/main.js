@@ -103,32 +103,19 @@ document.addEventListener('DOMContentLoaded', () => {
         link.style.color = 'white';
     });
 
-    // Logo y menu ocultos inicialmente, aparecen al hacer scroll
+    // Logo y menu siempre visibles
     const logo = document.querySelector('.nav-logo');
     const navList = document.querySelector('.nav-list');
     
     if (logo) {
-        logo.style.opacity = '0';
-        logo.style.transition = 'opacity 0.8s ease';
+        logo.style.opacity = '1';
+        logo.style.transition = 'opacity 0.3s ease';
     }
     
     if (navList) {
-        navList.style.opacity = '0';
-        navList.style.transition = 'opacity 0.8s ease';
+        navList.style.opacity = '1';
+        navList.style.transition = 'opacity 0.3s ease';
     }
-
-    // Efecto de scroll para mostrar/ocultar logo y menu
-    window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        
-        if (scrollY > 100) {
-            if (logo) logo.style.opacity = '1';
-            if (navList) navList.style.opacity = '1';
-        } else {
-            if (logo) logo.style.opacity = '0';
-            if (navList) navList.style.opacity = '0';
-        }
-    });
 
     // Parallax effect for hero - DISABLED
     // const heroSection = document.querySelector('.hero-section');
