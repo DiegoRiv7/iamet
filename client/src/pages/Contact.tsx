@@ -38,7 +38,7 @@ import {
   Upload
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useLocation, useSearch } from "wouter";
+import { useLocation } from "wouter";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -80,7 +80,7 @@ async function sendToBitrix(data: Record<string, any>, method: string = "crm.lea
 
 export default function Contact() {
   const { toast } = useToast();
-  const search = useSearch();
+  const search = window.location.search;
   const params = new URLSearchParams(search);
   const tipoInicial = params.get("tipo") || "ventas";
   
