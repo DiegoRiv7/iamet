@@ -28,8 +28,8 @@ COPY --from=build /app/dist /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Corregir permisos
-RUN chmod -R 644 /usr/share/nginx/html/*
-RUN chmod 755 /usr/share/nginx/html
+RUN find /usr/share/nginx/html -type f -exec chmod 644 {} \;
+RUN find /usr/share/nginx/html -type d -exec chmod 755 {} \;
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
