@@ -7,8 +7,8 @@ WORKDIR /app
 COPY package.json ./
 COPY vite.config.ts tsconfig.json tsconfig.node.json components.json ./
 
-# Instalar dependencias
-RUN npm install
+# Instalar dependencias con resolución de conflictos
+RUN npm install --legacy-peer-deps
 
 # Copiar código fuente
 COPY client/ ./client/
