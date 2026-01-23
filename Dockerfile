@@ -27,9 +27,11 @@ COPY --from=build /app/dist /usr/share/nginx/html/
 # Copiar configuración nginx simplificada
 COPY nginx-simple.conf /etc/nginx/nginx.conf
 
-# Corregir permisos
-RUN find /usr/share/nginx/html -type f -exec chmod 644 {} \;
-RUN find /usr/share/nginx/html -type d -exec chmod 755 {} \;
+# Corregir permisos recursivamente
+RUN chown -R nginx:nginx /usr/share/nginx/html
+RUN find /usr/share/nginx/html -type f -exec chmod 644 {} +
+RUN find /usr/share/nginx/html -type d -exec chmod 755 {} +
+RUN chmod 755 /usr/share/nginx/html
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
