@@ -24,8 +24,8 @@ FROM nginx:alpine
 # Copiar archivos construidos desde la etapa de build
 COPY --from=build /app/dist /usr/share/nginx/html/
 
-# Copiar configuración nginx
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copiar configuración nginx simplificada
+COPY nginx-simple.conf /etc/nginx/nginx.conf
 
 # Corregir permisos
 RUN find /usr/share/nginx/html -type f -exec chmod 644 {} \;
